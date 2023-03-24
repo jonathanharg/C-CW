@@ -2,3 +2,4 @@
 1 Pig Latin/test_pig
 2 Shuffling/demo_shuffle
 *.o
+.vscode
