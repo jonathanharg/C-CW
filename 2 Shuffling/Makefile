@@ -8,4 +8,4 @@ demo_shuffle: demo_shuffle.o riffle.o
 	gcc -ansi demo_shuffle.o riffle.o -o demo_shuffle
 
 clean:
-	rm *.o riffle demo_shuffle
+	rm *.o demo_shuffle
