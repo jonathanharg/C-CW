@@ -37,20 +37,20 @@ void riffle_once(void* L, int len, int size, void* work) {
         }
 
         if (selected == 1) {
-            // Shuffling a card from Deck B
+            /* Shuffling a card from Deck B */
             memcpy(p_shuffled, p_deckB, size);
             p_shuffled += size;
             p_deckB += size;
         }
 
         if (p_deckA >= p_middle) {
-            // If there are no more cards left in deck A, choose B
+            /* If there are no more cards left in deck A, choose B */
             selected = 1;
         } else if (p_deckB >= p_end) {
-            // If there are no more cards left in deck B, choose A
+            /* If there are no more cards left in deck B, choose A */
             selected = 0;
         } else {
-            // If both A & B have cards, choose randomly
+            /* If both A & B have cards, choose randomly */
             selected = rand() % 2;
         }
     }
