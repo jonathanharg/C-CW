@@ -26,11 +26,6 @@ char* pig(char* word) {
         }
     }
 
-    if (firstVowelIndex == wordLen) {
-        fprintf(stderr, "Warning! Consonants only word detected!\n");
-        return word;
-    }
-
     unsigned short suffixLen = (firstVowelIndex == 0) ? 3 : 2;
     char* suffix = (firstVowelIndex == 0) ? "way" : "ay";
 
@@ -38,6 +33,11 @@ char* pig(char* word) {
     if (p_result == NULL)
         fprintf(stderr,
                 "Failed to allocate enough memory for the pig latin word!");
+
+    if (firstVowelIndex == wordLen) {
+        fprintf(stderr, "Warning! Consonants only word detected!\n");
+        return word;
+    }
 
     /* Copy the first vowel onwards to the beginning of the result */
     strcpy(p_result, word + firstVowelIndex);
