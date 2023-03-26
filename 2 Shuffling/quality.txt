@@ -1,0 +1,22 @@
+~ ./quality
+Shuffled 50 ints 1 times over 30 trials. Quality: 0.771428
+Shuffled 50 ints 2 times over 30 trials. Quality: 0.642857
+Shuffled 50 ints 3 times over 30 trials. Quality: 0.579592
+Shuffled 50 ints 4 times over 30 trials. Quality: 0.532653
+Shuffled 50 ints 5 times over 30 trials. Quality: 0.517687
+Shuffled 50 ints 6 times over 30 trials. Quality: 0.517007
+Shuffled 50 ints 7 times over 30 trials. Quality: 0.502721
+Shuffled 50 ints 8 times over 30 trials. Quality: 0.500680
+Shuffled 50 ints 9 times over 30 trials. Quality: 0.500000
+Shuffled 50 ints 10 times over 30 trials. Quality: 0.504082
+Shuffled 50 ints 11 times over 30 trials. Quality: 0.510884
+Shuffled 50 ints 12 times over 30 trials. Quality: 0.491837
+Shuffled 50 ints 13 times over 30 trials. Quality: 0.511565
+Shuffled 50 ints 14 times over 30 trials. Quality: 0.484354
+Shuffled 50 ints 15 times over 30 trials. Quality: 0.484354
+
+Explanation:
+From the results of the simulation, it appears to be enough to riffle shuffle a deck 7 times to
+achieve a 2 decimal place accuracy. Any more shuffling and the quality only oscillates between
+an ± 0.01 average. Any less shuffling and the quality shows a slight tendency to converge slightly
+above the 0.5 mark.

@@ -8,6 +8,7 @@ const char* VOWELS = "aeiou";
 char* pig(char* word) {
     /* TODO: Add comments for inputs and outputs and what the function does */
     /* TODO: Lowercase every letter */
+    /* TODO: Fix valgrind errors */
     unsigned short wordLen = strlen(word);
     unsigned short firstVowelIndex = wordLen;
     unsigned short foundVowel = 0;
