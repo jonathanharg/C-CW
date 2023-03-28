@@ -1,7 +1,11 @@
-1 Pig Latin/piglatin
-1 Pig Latin/test_pig
-2 Shuffling/demo_shuffle
-2 Shuffling/quality
+1-Pig-Latin/piglatin
+1-Pig-Latin/test_pig
+2-Shuffling/demo_shuffle
+2-Shuffling/quality
+3-Beggar-your-neighbour/single
+3-Beggar-your-neighbour/byn
 *.o
 .vscode
 *.gch
+.idea
+.DS_Store

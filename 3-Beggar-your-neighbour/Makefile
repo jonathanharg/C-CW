@@ -11,7 +11,7 @@ beggar.o: beggar.c beggar.h
 	gcc -ansi -c -O2 beggar.c beggar.h
 
 beggar: beggar.o ../2-Shuffling/riffle.o
-	gcc -ansi -O2 beggar.o -o beggar
+	gcc -ansi -O2 beggar.o ../2-Shuffling/riffle.o -o beggar
 
 clean:
 	rm *.o *.gch beggar

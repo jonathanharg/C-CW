@@ -84,7 +84,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void*, void*)) {
     }
     free(shuffled);
     /* By this point, every element in the shuffled set exists in the not
-     * shuffled set and vice-versa. Therefore the shuffled set and not shuffled
+     * shuffled set and vice-versa. Therefore, the shuffled set and not shuffled
      * set are equal. */
     return 1;
 }
