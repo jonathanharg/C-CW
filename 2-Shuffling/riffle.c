@@ -67,7 +67,7 @@ void riffle(void* L, int len, int size, int N) {
     for (n = 0; n < N; n++) {
         riffle_once(L, len, size, work);
     }
-    free(work);
+    // free(work);
 }
 
 /**
@@ -80,23 +80,23 @@ void riffle(void* L, int len, int size, int N) {
  * @return Returns 1 if the shuffle is valid, 0 otherwise.
  */
 int check_shuffle(void* L, int len, int size, int (*cmp)(void*, void*)) {
-    void* p_shuffled = malloc(len * size);
-    if (p_shuffled == NULL) {
+    void* shuffled = malloc(len * size);
+    if (shuffled == NULL) {
         fprintf(stderr, "Cannot allocate enough memory to shuffle.\n");
         return 0;
     }
 
-    memcpy(p_shuffled, L, len * size);
-    riffle(p_shuffled, len, size, 1);
+    memcpy(shuffled, L, len * size);
+    riffle(shuffled, len, size, 1);
 
     int i;
     for (i = 0; i < len; i++) {
         void* p_not_shuffled = L + (i * size);
-        p_shuffled = p_shuffled + (i * size);
+        void* p_shuffled = shuffled + (i * size);
 
         /* Checks ith item in shuffled is in not shuffled and vice-versa */
-        int in_shuffled = element_in(p_not_shuffled, p_shuffled, len, size, cmp);
-        int in_not_shuffled = element_in(p_shuffled, L, len, size, cmp);
+        int in_shuffled = element_in(p_not_shuffled, shuffled, len, size, cmp);
+        int in_not_shuffled = element_in(shuffled, L, len, size, cmp);
 
         if (!in_shuffled || !in_not_shuffled) {
             /* There exists an element in one set that does not exist in the other */
@@ -107,7 +107,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void*, void*)) {
     /* By this point, every element in the shuffled set exists in the not
      * shuffled set and vice-versa. Therefore, the shuffled set and not shuffled
      * set are equal. */
-    free(p_shuffled);
+    free(shuffled);
     return 1;
 }
 

@@ -22,8 +22,7 @@ int main() {
     print_ints(numbers, numbers_len);
     print_strings((char**)&greek, greek_len);
 
-    int numbers_check =
-        check_shuffle(numbers, numbers_len, numbers_size, int_cmp);
+    int numbers_check = check_shuffle(numbers, numbers_len, numbers_size, int_cmp);
     int greek_check = check_shuffle(greek, greek_len, greek_size, str_cmp);
 
     if (numbers_check == 1)

@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,18 +13,13 @@ const char* VOWELS = "aeiou";
  */
 char* pig(char* word) {
     /* TODO: Fix valgrind errors */
-    unsigned long int word_len = strlen(word);
+    int word_len = strlen(word);
     /* Default the index of the first vowel to be the end of the string, i.e. no vowel */
     int first_vowel_index = word_len;
     int found_vowel = 0;
     int i;
 
-    for (i = 0; (i < word_len) && !found_vowel; i++) {
-        word[i] = tolower(word[i]);
-
-        if (found_vowel)
-            continue;
-
+    for (i = 0; i < word_len && !found_vowel; i++) {
         /* If VOWELS contains the current character */
         if (strchr(VOWELS, word[i]) != NULL) {
             first_vowel_index = i;
