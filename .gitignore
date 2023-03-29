@@ -6,6 +6,6 @@
 3-Beggar-your-neighbour/byn
 *.o
 .vscode
-*.gch
 .idea
 .DS_Store
+.current_deck

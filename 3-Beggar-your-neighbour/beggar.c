@@ -1,24 +1,26 @@
-#include <stdarg.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "../2-Shuffling/riffle.h"
 #include "beggar.h"
 
-int main() {
-    int pack[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-                  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-                  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-                  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-    srand(time(NULL));
-    riffle(pack, 52, sizeof(int), 7);
-
-    beggar(3, pack, 1);
-    return 0;
-}
-
+/**
+ * @brief Simulate a single game of beggar your neighbour.
+ * @param Nplayers The number of player to simulate. Must be at least 2 and at most 25.
+ * @param deck Pointer to the deck of 52 cards to use. Defined from top to bottom as an array
+ * of integers.
+ * @param talkative Whether or not to display the state of the game before each player takes
+ * their turn.
+ * @return Returns the number of turns it took for the game to terminate.
+ */
 int beggar(int Nplayers, int* deck, int talkative) {
+    if (Nplayers < 2 || Nplayers > 25) {
+        fprintf(stderr, "Cannot play with less than 2 players or more than 25.\n");
+        return -1;
+    }
+
+    /* Initialize hands and the pile */
     Hand* players[Nplayers];
     Hand* pile = hand_create();
 
@@ -27,26 +29,36 @@ int beggar(int Nplayers, int* deck, int talkative) {
         players[i] = hand_create();
     }
 
-    // Dealing
+    /* Deal the cards */
     for (i = 0; i < 52; i++) {
-        Hand* give_to = players[i % Nplayers];
-        hand_push(give_to, deck[i]);
+        Hand* deal_to = players[i % Nplayers];
+        hand_push(deal_to, deck[i]);
     }
 
+    /* Which player is currently playing */
     int player = 0;
+    /* Which was the last player to play. Who we should give the reward to. */
     int last_player = 0;
-    unsigned long int turn = 1;
+    int turn = 0;
+
     while (!finished(players, Nplayers)) {
         if (players[player]->empty) {
-            // The player has no cards, skip them
+            /* The player has no cards, skip them */
             player = (player + 1) % Nplayers;
             continue;
         }
 
+        turn++;
+
+        if (turn >= INT_MAX - 1)
+            /* Unlikely to happen, incase an infinite game occurs. */
+            fprintf(stderr, "Turn count will overflow!");
+
         if (talkative) {
-            printf("Turn %lu\n", turn);
+            printf("Turn %i\n", turn);
             printf("Pile:  ");
-            print_ints(pile->start, 52);
+            hand_print(pile, 0);
+
             for (i = 0; i < Nplayers; i++) {
                 if (i == player) {
                     printf("*");
@@ -54,176 +66,93 @@ int beggar(int Nplayers, int* deck, int talkative) {
                     printf(" ");
                 }
                 printf("%4i: ", i);
-                print_ints(players[i]->start, 52);
+                hand_print(players[i], 1);
             }
+            printf("\n");
         }
 
         Hand* reward = take_turn(players[player], pile);
+
         if (reward != NULL) {
             hand_give_pile(players[last_player], reward);
         }
 
-        // Save the last player, incase a player is eliminated
-        // Then we always know the last player
+        /* Save the last player, incase a player is eliminated */
         last_player = player;
-        turn++;
         player = (player + 1) % Nplayers;
     }
-    printf("Turns: %lu", turn);
+
+    if (talkative)
+        printf("Turns: %i", turn);
 
     for (i = 0; i < Nplayers; i++) {
         free(players[i]->start);
         free(players[i]);
     }
     free(pile);
-    return 0;
+    return turn;
 }
 
-Hand* hand_create() {
-    Hand* hand = malloc(sizeof(Hand));
-    /* The size of a players hand cannot exceed 52 */
-    int* start = (int*)malloc(52 * sizeof(int));
-    if (start == NULL || hand == NULL)
-        fprintf(stderr, "Failed to allocate enough memory to create a hand.\n");
-    hand->start = start;
-    hand->end = start + 51;
-    hand->top = start;
-    hand->tail = start;
-    hand->empty = 1;
-    return hand;
-}
-
-void hand_push(Hand* self, int card) {
-    // If the tail is the same as the top and the hand isn't uninitialized
-    if ((self->tail == self->top) && !self->empty) {
-        fprintf(stderr,
-                "Hand is full! Cannot add another card without overwriting an "
-                "existing one!\n");
-        return;
-    }
-    self->empty = 0;
-    *(self->tail) = card;
-    if (self->tail == self->end) {
-        // We have reached the end of the array, wrap back around to the
-        // beginning
-        self->tail = self->start;
-    } else {
-        self->tail += 1;
-    }
-}
-
+/**
+ * @brief Determine if a game of Beggar your neighbour has finished.
+ * @param players Pointer to an array of Hands.
+ * @param Nplayers The number of players in the game.
+ * @return Returns 1 if the game is finished, 0 otherwise.
+ */
 int finished(Hand** players, int Nplayers) {
-    int has_cards = -1;
-    int eliminated = 0;
+    int someone_has_cards = 0;
     int i;
     for (i = 0; i < Nplayers; i++) {
         if (players[i]->empty) {
-            eliminated += 1;
             continue;
         }
-        if (has_cards != -1) {
-            // There is already another player with cards
+        if (someone_has_cards) {
+            /* There is already another player with cards, therefore we haven't finished */
             return 0;
         }
-        has_cards = i;
+        someone_has_cards = 1;
     }
-    // Only one player has any cards remaining, they have won.
-    // printf("Player %i has won!\n", has_cards);
+    /* Only one player has any cards remaining, they have won. */
     return 1;
 }
 
-int hand_peek(Hand* self) {
-    int* last = self->tail - 1;
-    return *last;
-}
-
-int hand_pop(Hand* self) {
-    if (self->empty) {
-        return 0;
-    }
-
-    if (self->tail == self->start) {
-        self->tail = self->end;
-    } else {
-        self->tail -= 1;
-    }
-
-    if (self->top == self->tail) {
-        self->empty = 1;
-    }
-
-    int popped = *(self->tail);
-    *(self->tail) = 0;
-    return popped;
-}
-
+/**
+ * @brief Take a turn given a players Hand and a pile.
+ * @param player The player whose turn it is.
+ * @param pile The current game pile.
+ * @return The reward if the player fails to play a penalty card, NULL otherwise.
+ */
 Hand* take_turn(Hand* player, Hand* pile) {
     int top_pile = hand_peek(pile);
+    /* If we have to give out a reward the last player or not */
     int give_reward = 0;
     int penalty;
-    // if (top_pile == 0) {
-    //     printf("The pile is empty, ");
-    // } else {
-    //     printf("Top card in pile is %i, ", top_pile);
-    // }
 
     if (top_pile < 11) {
         penalty = 1;
-        // printf("so we should lay a single card. ");
     } else {
         penalty = top_pile - 10;
-        // We must reward the previous player the pile
-        // unless we play a penalty card.
         give_reward = 1;
-        // if (penalty == 1)
-        //     printf("so we should lay 1 card. ");
-        // else
-        //     printf("so we should lay %i cards. ", penalty);
     }
+
     for (; penalty > 0; penalty--) {
         int card = hand_pop(player);
 
-        if (card == 0) {
-            // printf("We are out of cards! ");
-            // This player is out of cards, and is therefore out of the game.
+        /* This player is out of cards, and is therefore out of the game. */
+        if (card == 0)
             break;
-        }
-
-        // printf("Adding %i to pile. ", card);
 
         hand_push(pile, card);
 
+        /*  We played a penalty card, no need to give a reward and we can stop drawing cards now. */
         if (card > 10) {
-            // printf("We played a penalty card! ");
             give_reward = 0;
             break;
         }
     }
-    if (give_reward) {
-        // printf(
-        //     "We never played a penalty card! Giving the pile to the previous "
-        //     "player!\n\n");
+
+    if (give_reward)
         return pile;
-    }
-    // printf("\n\n");
 
     return NULL;
-}
-
-void hand_give_pile(Hand* hand, Hand* pile) {
-    for (; pile->top < pile->tail; pile->top += 1) {
-        hand->top -= 1;
-        if (hand->top < hand->start) {
-            // We've overflowed, loop back around to the end;
-            hand->top = hand->end;
-        }
-        *(hand->top) = *(pile->top);
-    }
-    pile->top = pile->start;
-    pile->tail = pile->start;
-    pile->empty = 1;
-    int i;
-    for (i = 0; i < 52; i++) {
-        pile->start[i] = 0;
-    }
 }

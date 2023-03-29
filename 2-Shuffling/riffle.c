@@ -5,13 +5,22 @@
 #include <string.h>
 #include <time.h>
 
+/**
+ * @brief Riffle shuffle an array once in place. Make sure to call srand() first.
+ * @param L The array to riffle shuffle.
+ * @param len The number of elements in the array L.
+ * @param size The size of each element in array L.
+ * @param work An L sized buffer to work in.
+ */
 void riffle_once(void* L, int len, int size, void* work) {
     memcpy(work, L, len * size);
     char* p_shuffled = L;
     char* p_middle = work + ((len / 2) * size);
     char* p_end = work + (len * size);
+
     char* p_deckA = work;
     char* p_deckB = p_middle;
+
     char selected = rand() % 2;
 
     while (p_deckA < p_middle || p_deckB < p_end) {
@@ -42,12 +51,14 @@ void riffle_once(void* L, int len, int size, void* work) {
     }
 }
 
+/**
+ * @brief Riffle shuffle an array once in place. Make sure to call srand() first.
+ * @param L The array to riffle shuffle.
+ * @param len The number of elements in the array L.
+ * @param size The size of each element in array L.
+ * @param N How many times to shuffle the array.
+ */
 void riffle(void* L, int len, int size, int N) {
-    if (N <= 0) {
-        fprintf(stderr, "N must be greater than or equal to zero to riffle shuffle.\n");
-        return;
-    }
-
     void* work = malloc(size * len);
     if (work == NULL)
         fprintf(stderr, "Failed to allocate enough memory to riffle shuffle.\n");
@@ -59,36 +70,52 @@ void riffle(void* L, int len, int size, int N) {
     free(work);
 }
 
+/**
+ * @brief Check that riffle shuffle works successfully. Make sure to call srand() first.
+ * @param L The array to riffle shuffle.
+ * @param len The number of elements in the array L.
+ * @param size The size of each element in array L.
+ * @param cmp A comparison function between elements. Should return -1, 0 or +1 if the first
+ * argument is greater than, equal to, or less than the second argument respectively.
+ * @return Returns 1 if the shuffle is valid, 0 otherwise.
+ */
 int check_shuffle(void* L, int len, int size, int (*cmp)(void*, void*)) {
-    void* shuffled = malloc(len * size);
-    if (shuffled == NULL) {
+    void* p_shuffled = malloc(len * size);
+    if (p_shuffled == NULL) {
         fprintf(stderr, "Cannot allocate enough memory to shuffle.\n");
         return 0;
     }
 
-    memcpy(shuffled, L, len * size);
-    riffle(shuffled, len, size, 1);
+    memcpy(p_shuffled, L, len * size);
+    riffle(p_shuffled, len, size, 1);
 
     int i;
     for (i = 0; i < len; i++) {
-        void* ith_not_shuffled = L + (i * size);
-        void* ith_shuffled = shuffled + (i * size);
+        void* p_not_shuffled = L + (i * size);
+        p_shuffled = p_shuffled + (i * size);
 
-        int in_shuffled = element_in(ith_not_shuffled, shuffled, len, size, cmp);
-        int in_not_shuffled = element_in(ith_shuffled, L, len, size, cmp);
+        /* Checks ith item in shuffled is in not shuffled and vice-versa */
+        int in_shuffled = element_in(p_not_shuffled, p_shuffled, len, size, cmp);
+        int in_not_shuffled = element_in(p_shuffled, L, len, size, cmp);
 
-        if (!in_shuffled || !in_not_shuffled)
-            /* There exists an element in one set that does not exist in the
-             * other */
+        if (!in_shuffled || !in_not_shuffled) {
+            /* There exists an element in one set that does not exist in the other */
+            free(p_shuffled);
             return 0;
+        }
     }
-    free(shuffled);
     /* By this point, every element in the shuffled set exists in the not
      * shuffled set and vice-versa. Therefore, the shuffled set and not shuffled
      * set are equal. */
+    free(p_shuffled);
     return 1;
 }
 
+/**
+ * @brief Print an array of integers to stdout.
+ * @param first_int Pointer to the first integer.
+ * @param length The number of integers to print.
+ */
 void print_ints(int* first_int, int length) {
     printf("[");
     int i;
@@ -99,6 +126,11 @@ void print_ints(int* first_int, int length) {
     printf("]\n");
 }
 
+/**
+ * @brief Print an array of char pointers to stdout.
+ * @param first_str Pointer to the first char pointer.
+ * @param length The number of char pointers to print.
+ */
 void print_strings(char** first_str, int length) {
     printf("[");
     int i;
@@ -109,56 +141,91 @@ void print_strings(char** first_str, int length) {
     printf("]\n");
 }
 
+/**
+ * @brief Check if an element is in a set of the same type.
+ * @param element The element to check if it exists in the set.
+ * @param set The set of elements to check.
+ * @param len The number of elements in the set.
+ * @param size The size of each element in the set.
+ * @param cmp A comparison function between elements. Should return -1, 0 or +1 if the first
+ * argument is greater than, equal to, or less than the second argument respectively.
+ * @return Returns 1 if the element is in the set, 0 otherwise.
+ */
 int element_in(void* element, void* set, int len, int size, int (*cmp)(void*, void*)) {
-    void* end = set + (len * size);
+    void* p_end = set + (len * size);
     void* p;
-    for (p = set; p < end; p += size) {
+    for (p = set; p < p_end; p += size) {
         if (cmp(p, element) == 0) {
-            /* Element is in the set */
             return 1;
         }
     }
-    /* Element not found in set */
     return 0;
 }
 
+/**
+ * @brief Compare two integers.
+ * @param a First integer.
+ * @param b Second integer.
+ * @return Returns -1, 0 or +1 if the first argument is greater than, equal to, or less than the
+ * second argument respectively.
+ */
 int int_cmp(void* a, void* b) {
     int int_a = *((int*)a);
     int int_b = *((int*)b);
     return (int_a > int_b) - (int_a < int_b);
 }
 
+/**
+ * @brief Compare two strings.
+ * @param a First string.
+ * @param b Second string.
+ * @return Returns 0 if the first string equals the second.
+ */
 int str_cmp(void* a, void* b) {
     return strcmp((char*)a, (char*)b);
 }
 
+/**
+ * @brief Determines the quality a shuffled array of integers.
+ * @param numbers The array of integers to analyze.
+ * @param len The number of integers in the array.
+ * @return The quality of the shuffle from 0 to 1. Should aim to be around 0.5.
+ */
 float quality(int* numbers, int len) {
-    int* penultimate = numbers + len - 1;
+    int* p_penultimate = numbers + len - 1;
     int count = 0;
     int* p;
-    for (p = numbers; p < penultimate; p++) {
-        int* next = p + 1;
-        if (*next > *p)
+    for (p = numbers; p < p_penultimate; p++) {
+        int* p_next = p + 1;
+        if (*p_next > *p)
             count += 1;
     }
-    float result = ((float)count) / ((float)len - 1);
+    float result = (float)count / (len - 1);
     return result;
 }
 
+/**
+ * @brief Determine the average quality of a shuffle of N integers. Make sure to call srand() first.
+ * @param N The number of integers to shuffle.
+ * @param shuffles The number of times to shuffle the array.
+ * @param trials The number of trials to perform.
+ */
 void average_quality(int N, int shuffles, int trials) {
-    /* Create deck */
     int deck[N];
-    int trial;
+    int t;
     float total_score = 0;
-    for (trial = 0; trial < trials; trial++) {
+
+    for (t = 0; t < trials; t++) {
         /* Populate the deck/Reset the deck after shuffling */
         int n;
         for (n = 0; n < N; n++) {
             deck[n] = n;
         }
+
         riffle(deck, N, sizeof(int), shuffles);
         total_score += quality(deck, N);
     }
-    float result = (total_score) / ((float)trials);
+
+    float result = total_score / trials;
     printf("Shuffled %i ints %i times over %i trials. Quality: %f\n", N, shuffles, trials, result);
 }

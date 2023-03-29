@@ -3,15 +3,14 @@
 #include "pig.h"
 
 int main() {
-    char* testWords[] = {"happy", "duck",   "glove",  "evil",
-                         "eight", "yowler", "crystal"};
+    char* test_words[] = {"happy", "duck", "glove", "evil", "eight", "yowler", "crystal"};
 
     int i;
-    for (i = 0; i < sizeof(testWords) / sizeof(testWords[0]); i++) {
-        char* word = testWords[i];
-        char* pigged_word = pig(word);
-        printf("%s => %s\n", word, pigged_word);
-        free(pigged_word);
+    for (i = 0; i < sizeof(test_words) / sizeof(test_words[0]); i++) {
+        char* p_word = test_words[i];
+        char* p_pigged_word = pig(p_word);
+        printf("%s => %s\n", p_word, p_pigged_word);
+        free(p_pigged_word);
     }
 
     return 0;

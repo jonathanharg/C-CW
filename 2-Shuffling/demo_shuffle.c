@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 #include "riffle.h"
@@ -33,8 +32,7 @@ int main() {
         fprintf(stderr, "numbers check FAILED: riffle is not a permutation!\n");
 
     if (greek_check == 1)
-        printf(
-            "greek check PASSED: x is in shuffled if and only if x is in not shuffled.\n");
+        printf("greek check PASSED: x is in shuffled if and only if x is in not shuffled.\n");
     else
         fprintf(stderr, "greek check FAILED: riffle is not a permutation!\n");
 
