@@ -5,7 +5,5 @@
 3-Beggar-your-neighbour/single
 3-Beggar-your-neighbour/byn
 *.o
-.vscode
-.idea
 .DS_Store
 .current_deck

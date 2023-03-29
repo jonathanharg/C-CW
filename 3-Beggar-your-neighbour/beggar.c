@@ -128,7 +128,7 @@ Hand* take_turn(Hand* player, Hand* pile) {
     flag reveals that it believes there is a "Conditional jump or move depends on uninitialised
     value(s)" at this location. The only way I have found to get rid of this error is to hard-code
     hand_peek() so that it returns a constant value i.e. 0. Somewhat ironically, this solution to
-    the error also breaks the whole program. I believe this is a false possitive found by valgrind,
+    the error also breaks the whole program. I believe this is a false positive found by Valgrind,
     but if I am wrong and you can lead me to the source of this error I would love to know. */
     int top_pile = hand_peek(pile);
     /* If we have to give out a reward the last player or not */
