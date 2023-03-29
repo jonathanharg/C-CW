@@ -5,7 +5,7 @@
 #include "../2-Shuffling/riffle.h"
 #include "beggar.h"
 
-int PRINT_DECKS = 0;
+const int PRINT_DECKS = 0;
 
 typedef struct {
     int shortest;
@@ -22,7 +22,7 @@ void write_deck(int* pack);
 int main(int argc, char* argv[]) {
     if (argc < 3) {
         fprintf(stderr, "Please provide the number of players and the number of trials as arguments\n");
-        printf("\nUsage: byn N T\nN:    int - maximum number of players.\nT:    int - number of trials.");
+        printf("\nUsage: byn N T\nN:    int - maximum number of players.\nT:    int - number of trials.\n");
         return 1;
     }
 
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
             printf("Longest deck: ");
             print_ints(stats->longest_deck, 52);
         }
-        
+
         free(stats);
     }
 }

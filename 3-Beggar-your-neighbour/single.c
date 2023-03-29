@@ -8,7 +8,7 @@
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         fprintf(stderr, "Please provide the number of players as an argument\n");
-        printf("\nUsage: single N\nN:    int - number of players.");
+        printf("\nUsage: single N\nN:    int - number of players.\n");
         return 1;
     }
 
