@@ -133,12 +133,6 @@ void hand_give_pile(Hand* self, Hand* pile) {
     pile->tail = pile->start;
     pile->top = pile->start;
     pile->empty = 1;
-
-    // TODO: Remove this
-    int i;
-    for (i = 0; i < 52; i++) {
-        pile->start[i] = 0;
-    }
 }
 
 /**
