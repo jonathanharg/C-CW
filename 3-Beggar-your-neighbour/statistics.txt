@@ -1,0 +1,10 @@
+~ ./byn 10 100000
+Played 100000 games with 2 players, shortest 23, longest 1762, average 186.396683
+Played 100000 games with 3 players, shortest 30, longest 1900, average 240.979965
+Played 100000 games with 4 players, shortest 33, longest 1918, average 266.821472
+Played 100000 games with 5 players, shortest 34, longest 1952, average 282.990540
+Played 100000 games with 6 players, shortest 36, longest 1844, average 294.227081
+Played 100000 games with 7 players, shortest 39, longest 1787, average 301.719788
+Played 100000 games with 8 players, shortest 38, longest 2137, average 306.767303
+Played 100000 games with 9 players, shortest 43, longest 1880, average 312.694794
+Played 100000 games with 10 players, shortest 42, longest 1991, average 316.575714
