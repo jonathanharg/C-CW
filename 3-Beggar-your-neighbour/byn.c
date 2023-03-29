@@ -5,6 +5,8 @@
 #include "../2-Shuffling/riffle.h"
 #include "beggar.h"
 
+int PRINT_DECKS = 0;
+
 typedef struct {
     int shortest;
     int longest;
@@ -41,10 +43,14 @@ int main(int argc, char* argv[]) {
     for (player_count = 2; player_count <= Nplayers; player_count++) {
         Statistics* stats = statistics(player_count, trials);
         printf("Played %i games with %i players, shortest %i, longest %i, average %f\n", trials, player_count, stats->shortest, stats->longest, stats->average);
-        // printf("Shortest deck: ");
-        // print_ints(stats->shortest_deck, 52);
-        // printf("Longest deck: ");
-        // print_ints(stats->longest_deck, 52);
+        
+        if (PRINT_DECKS) {
+            printf("Shortest deck: ");
+            print_ints(stats->shortest_deck, 52);
+            printf("Longest deck: ");
+            print_ints(stats->longest_deck, 52);
+        }
+        
         free(stats);
     }
 }
