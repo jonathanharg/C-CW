@@ -68,7 +68,7 @@ int beggar(int Nplayers, int* deck, int talkative) {
                 printf("%4i: ", i);
                 hand_print(players[i], 1);
             }
-            printf("\n");
+            printf("\n\n");
         }
 
         Hand* reward = take_turn(players[player], pile);
