@@ -67,7 +67,7 @@ void riffle(void* L, int len, int size, int N) {
     for (n = 0; n < N; n++) {
         riffle_once(L, len, size, work);
     }
-    // free(work);
+    free(work);
 }
 
 /**
