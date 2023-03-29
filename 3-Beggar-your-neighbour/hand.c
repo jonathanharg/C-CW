@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 /**
- * @brief Initialize a player hand or a pile.
+ * @brief Initialise a player hand or a pile.
  * @return Returns a pointer to the hand.
  */
 Hand* hand_create() {
@@ -13,7 +13,7 @@ Hand* hand_create() {
     is more efficient than a linked list implementation since all of the cards are next to each
     other in memory. */
 
-    Hand* hand = malloc(sizeof(Hand));
+    Hand* hand = (Hand *) malloc(sizeof(Hand));
 
     int* p_start = (int*)malloc(52 * sizeof(int));
     if (p_start == NULL || hand == NULL)

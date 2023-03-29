@@ -20,7 +20,7 @@ int beggar(int Nplayers, int* deck, int talkative) {
         return -1;
     }
 
-    /* Initialize hands and the pile */
+    /* Initialise hands and the pile */
     Hand* players[Nplayers];
     Hand* pile = hand_create();
 
@@ -89,6 +89,7 @@ int beggar(int Nplayers, int* deck, int talkative) {
         free(players[i]->start);
         free(players[i]);
     }
+    free(pile->start);
     free(pile);
     return turn;
 }
@@ -123,6 +124,12 @@ int finished(Hand** players, int Nplayers) {
  * @return The reward if the player fails to play a penalty card, NULL otherwise.
  */
 Hand* take_turn(Hand* player, Hand* pile) {
+    /* NOTE: For some reason Valgrind believes the follow is an error. Compiling with the -ggdb3
+    flag reveals that it believes there is a "Conditional jump or move depends on uninitialised
+    value(s)" at this location. The only way I have found to get rid of this error is to hard-code
+    hand_peek() so that it returns a constant value i.e. 0. Somewhat ironically, this solution to
+    the error also breaks the whole program. I believe this is a false possitive found by valgrind,
+    but if I am wrong and you can lead me to the source of this error I would love to know. */
     int top_pile = hand_peek(pile);
     /* If we have to give out a reward the last player or not */
     int give_reward = 0;

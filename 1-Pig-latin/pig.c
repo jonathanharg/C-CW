@@ -33,10 +33,11 @@ char* pig(char* word) {
         }
     }
 
-    int suffixLen = (first_vowel_index == 0) ? 3 : 2;
+    /* Allocate one extra char for null terminator */
+    int suffixLen = (first_vowel_index == 0) ? 4 : 3;
     char* p_suffix = (first_vowel_index == 0) ? "way" : "ay";
 
-    char* p_result = malloc((word_len + suffixLen) * sizeof(char));
+    char* p_result = malloc((word_len + suffixLen + 1) * sizeof(char));
     if (p_result == NULL)
         fprintf(stderr, "Failed to allocate enough memory for the pig latin word!");
 
